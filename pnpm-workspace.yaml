@@ -1,0 +1,3 @@
+# Macaw ships betas that a theme update should not wait a day for; exclude only the exact version.
+minimumReleaseAgeExclude:
+  - '@langchain/macaw-tokens@1.0.0-beta.8'

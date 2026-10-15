@@ -1,0 +1,15 @@
+.DS_Store
+
+# Dependencies and build output
+node_modules/
+coverage/
+*.log
+
+# Local environments and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+credentials.json

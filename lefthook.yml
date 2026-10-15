@@ -1,0 +1,31 @@
+# The lefthook binary comes from mise (`mise install`).
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: '*.{ts,json,yaml,yml,md,toml}'
+      exclude: ['themes/**']
+      run: pnpm exec oxfmt --check {staged_files}
+    stylua:
+      glob: '*.lua'
+      run: stylua --check {staged_files}
+    lint:
+      glob: '*.ts'
+      run: pnpm exec oxlint {staged_files}
+    typecheck:
+      run: pnpm exec tsc
+    palettes-fresh:
+      run: node src/generate.ts --check
+    secrets:
+      # Names the files only: echoing the matched line would print the secret into the log.
+      run: |
+        pattern='^\+.*(sk-ant-[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}|lsv2_[a-z]{2}_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{40,})'
+        files=$(git diff --cached --name-only -z -- . ':!lefthook.yml' | xargs -0 -n1 sh -c '
+          [ -n "${2-}" ] || exit 0
+          if GIT_LITERAL_PATHSPECS=1 git diff --cached -U0 -- "$2" | grep -qE "$1"; then printf "  %s\n" "$2"; fi' sh "$pattern")
+        if [ -n "$files" ]; then printf 'possible secret in staged changes to:\n%s\n' "$files"; exit 1; fi
+
+pre-push:
+  commands:
+    test:
+      run: mise run test

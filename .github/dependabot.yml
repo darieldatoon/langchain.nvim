@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Outlasts pnpm's minimum release age, so bumps install without exclusions.
+    cooldown:
+      default-days: 2
+    ignore:
+      # Stays on Macaw's TypeScript major.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      # Tracks the Node major in mise.toml; bump both together.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+    groups:
+      # Its own PR: a token bump changes colors and needs `mise run generate`.
+      macaw:
+        patterns: ['@langchain/macaw-tokens']
+      tooling:
+        patterns: ['*']
+        exclude-patterns: ['@langchain/macaw-tokens']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']

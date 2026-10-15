@@ -1,0 +1,40 @@
+# The only prerequisite is mise: `mise trust && mise install && mise run setup`.
+
+[tools]
+node = "24"
+pnpm = "12"
+lefthook = "2"
+neovim = "0.12"
+stylua = "2"
+"github:SocketDev/sfw-free" = { version = "1.15.2", bin = "sfw" }
+
+[settings]
+lockfile = true
+# CI runs on Linux; `mise install --locked` fails for platforms missing here.
+lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "macos-x64"]
+
+[tasks.setup]
+description = "Install dependencies through Socket Firewall, then git hooks"
+run = ["sfw pnpm install --frozen-lockfile", "lefthook install"]
+
+[tasks.generate]
+description = "Rewrite lua/langchain/palettes/*.lua from the installed @langchain/macaw-tokens"
+run = "node src/generate.ts"
+
+[tasks.check]
+description = "Format check (TS and Lua), lint, type check, and fail if a palette is stale"
+run = [
+  "pnpm exec oxfmt --check .",
+  "stylua --check lua colors scripts",
+  "pnpm exec oxlint",
+  "pnpm exec tsc",
+  "node src/generate.ts --check",
+]
+
+[tasks.test]
+description = "Palette contrast tests, then load the colorscheme in headless Neovim (light and dark)"
+run = ["pnpm exec vitest run", "nvim --headless --clean -l scripts/smoke.lua"]
+
+[tasks.release]
+description = "Bump the version (patch, minor or major), commit and tag it; push the tag to publish"
+run = 'npm version -m "chore: release v%s"'

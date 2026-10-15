@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: socketdev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+        with:
+          mode: firewall-free
+
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        with:
+          install: true
+          cache: true
+
+      - name: Install
+        run: sfw pnpm install --frozen-lockfile
+
+      # Fails when themes/ no longer matches the installed Macaw tokens, e.g. on a
+      # Dependabot bump: run `mise run generate` on the branch and push.
+      - name: Check
+        run: mise run check
+
+      # Vitest, then loads the colorscheme in headless Neovim (light and dark).
+      - name: Test
+        run: mise run test

@@ -1,0 +1,25 @@
+{
+  "name": "langchain.nvim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LangChain Light and Dark Neovim colorscheme generated from LangChain's Macaw design system tokens.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darieldatoon/langchain.nvim.git"
+  },
+  "type": "module",
+  "scripts": {
+    "generate": "node src/generate.ts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@langchain/macaw-tokens": "1.0.0-beta.8",
+    "@types/node": "^24.19.2",
+    "oxfmt": "0.73.0",
+    "oxlint": "1.88.0",
+    "typescript": "~5.9.3",
+    "vitest": "5.0.4"
+  },
+  "packageManager": "pnpm@12.5.1"
+}
