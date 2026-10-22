@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@langchain/macaw-tokens": "1.0.0-beta.9",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.5",
     "oxfmt": "0.74.0",
     "oxlint": "1.89.0",
     "typescript": "~5.9.3",

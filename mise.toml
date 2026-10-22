@@ -1,7 +1,7 @@
 # The only prerequisite is mise: `mise trust && mise install && mise run setup`.
 
 [tools]
-node = "24"
+node = "26"
 pnpm = "12"
 lefthook = "2"
 neovim = "0.12"
